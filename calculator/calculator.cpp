@@ -7,27 +7,6 @@
 #include "calculator.h"
 
 
-void Plus( Number& dest, const Number operand ) {
-    dest += operand;
-}
-
-void Minus( Number& dest, const Number operand ) {
-    dest -= operand;
-}
-
-void Multiply( Number& dest, const Number operand ) {
-    dest *= operand;
-}
-
-void Divide( Number& dest, const Number operand ) {
-    dest /= operand;
-}
-
-void Power( Number& dest, const Number operand ) {
-    dest = std::pow( dest, operand );
-}
-
-
 bool ReadNumber( Number& result ) 
 {
     std::cin >> result;
@@ -43,12 +22,15 @@ bool RunCalculatorCycle()
 {
     using namespace std::literals;
     
-    // значения результата возврата функции
+    // результаты возврата функции
     const bool SUCCESS = true;
     const bool FAIL    = false;
     
+    // значение, изменяемое калькулятором
     Number current = 0;
+    // значение следующего операнда
     Number next    = 0;
+    // команда операции
     std::string operation = ""s;
     
     // ячейка памяти калькулятора
@@ -73,22 +55,26 @@ bool RunCalculatorCycle()
             return SUCCESS; 
         }
 
+        // вывод сохраненного значения
         if ( operation == "="s ) {
             std::cout << current << std::endl;
             continue;    
         }
 
+        // очистка сохраненного значения
         if ( operation == "c"s ) {
             current = 0;
             continue;
         } 
 
+        // сохранение текущего значения в ячейку памяти
         if ( operation == "s"s ) {
             memory_value    = current;
             is_memory_empty = false;
             continue;
         }
 
+        // загрузка текущего значения из ячейки памяти
         if ( operation == "l"s ) {
             if ( is_memory_empty ) {
                 std::cerr << "Error: Memory is empty"s << std::endl;
@@ -106,33 +92,39 @@ bool RunCalculatorCycle()
         }
         
         // выполним операции
+
+        // сложение
         if ( operation == "+"s ) {
-            Plus( current, next );
+            current += next;
             continue;    
         } 
 
+        // вычитание
         if ( operation == "-"s ) {
-            Minus( current, next );
+            current -= next;
             continue; 
         }
 
+        // умножение
         if ( operation == "*"s ) {
-            Multiply( current, next );
+            current *= next;
             continue;
         }
 
-        if (operation == "/"s) {
-            Divide( current, next );
+        // деление
+        if ( operation == "/"s ) {
+            current /= next;
             continue;
-
         } 
 
-        if (operation == "**"s) {
-            Power( current, next );
+        // возведение в степень
+        if ( operation == "**"s ) {
+            current = std::pow( current, next );
             continue;    
         } 
 
-        if (operation == ":"s) {
+        // явное задание числа, хранимого в калькуляторе 
+        if ( operation == ":"s ) {
             current = next;
             continue;
         }  
@@ -143,5 +135,8 @@ bool RunCalculatorCycle()
 
     }
     
+    // основной цикл калькулятора выше прервется в случае успешного завершения
+    // и дойдет сюда
+    // вернем признак успешности выполнения рассчетов
     return SUCCESS;
 }
